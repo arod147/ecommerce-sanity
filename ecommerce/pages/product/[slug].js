@@ -3,11 +3,12 @@ import { urlFor, client } from '../../lib/client';
 import { AiOutlineMinus, AiOutlinePlus, 
 AiFillStar, AiOutlineStar } from 'react-icons/ai'
 import { Product } from '../../components';
-
+import { useStateContext } from '../../context/StateContext';
 
 const ProductDetails = ({ product, products}) => {
     const { image, name, details, price } = product;
     const [index, setIndex] = useState(0)
+    const { decQty, incQty, qty, onAdd } = useStateContext();
   return (
     <div>
         <div className='product-detail-container'>
@@ -17,7 +18,8 @@ const ProductDetails = ({ product, products}) => {
                 </div>
                 <div className='small-images-container'>
                     {image?.map((item, i) => (
-                        <img 
+                        <img
+                            key={i}
                             src={urlFor(item)}
                             className={i === index ? 'small-image selected-image' : 'small-image'}
                             onMouseEnter={() => setIndex(i)}
@@ -47,19 +49,19 @@ const ProductDetails = ({ product, products}) => {
                     <p className='quantity-desc'>
                         <span 
                             className='minus'
-                            // onClick={}
+                            onClick={decQty}
                         >
                             <AiOutlineMinus />
                         </span>
                         <span 
-                            className='minus'
-                            // onClick={}
+                            className='num'
+                            // onClick={incQty}
                         >
-                            0
+                            {qty}
                         </span>
                         <span 
                             className='plus'
-                            // onClick={}
+                            onClick={incQty}
                         >
                             <AiOutlinePlus />
                         </span>
@@ -69,7 +71,7 @@ const ProductDetails = ({ product, products}) => {
                 <button 
                     type='button' 
                     className='add-to-cart' 
-                    // onClick={}
+                    onClick={() => onAdd(product, qty)}
                 >
                     Add to cart
                 </button>
@@ -88,7 +90,7 @@ const ProductDetails = ({ product, products}) => {
                 <div className='marquee'>
                     <div className='maylike-products-container track'>
                         {products.map((item) => (
-                            <Product key={item._id}product={item}/>
+                            <Product key={item._id} product={item}/>
                         ))}
                     </div>
                 </div>
